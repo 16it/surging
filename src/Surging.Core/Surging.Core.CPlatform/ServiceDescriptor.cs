@@ -59,7 +59,7 @@ namespace Surging.Core.CPlatform
         }
 
         /// <summary>
-        /// 获取是否启用授权
+        /// 设置是否启用授权
         /// </summary>
         /// <param name="descriptor">服务描述符。</param>
         /// <param name="enable">是否启用</param>
@@ -77,7 +77,29 @@ namespace Surging.Core.CPlatform
         /// <returns>服务描述符。</returns>
         public static bool EnableAuthorization(this ServiceDescriptor descriptor)
         {
-            return descriptor.GetMetadata("EnableAuthorization", true);
+            return descriptor.GetMetadata("EnableAuthorization", false);
+        }
+
+        /// <summary>
+        /// 设置是否禁用外网访问
+        /// </summary>
+        /// <param name="descriptor">服务描述符。</param>
+        /// <param name="enable">是否禁用</param>
+        /// <returns>服务描述符。</returns>
+        public static ServiceDescriptor DisableNetwork(this ServiceDescriptor descriptor, bool enable)
+        {
+            descriptor.Metadatas["DisableNetwork"] = enable;
+            return descriptor;
+        }
+
+        /// <summary>
+        /// 获取是否禁用外网访问
+        /// </summary>
+        /// <param name="descriptor">服务描述符。</param>
+        /// <returns>服务描述符。</returns>
+        public static bool DisableNetwork(this ServiceDescriptor descriptor)
+        {
+            return descriptor.GetMetadata("DisableNetwork", false);
         }
 
         /// <summary>
@@ -163,7 +185,12 @@ namespace Surging.Core.CPlatform
         /// 服务Id。
         /// </summary>
         public string Id { get; set; }
-        
+
+        /// <summary>
+        /// 访问的令牌
+        /// </summary>
+        public string Token { get; set; }
+
         /// <summary>
         /// 路由
         /// </summary>

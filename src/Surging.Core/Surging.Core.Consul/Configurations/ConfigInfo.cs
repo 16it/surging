@@ -17,8 +17,9 @@ namespace Surging.Core.Consul.Configurations
         public ConfigInfo(string connectionString,string routePath = "services/serviceRoutes/",
              string subscriberPath = "services/serviceSubscribers/",
             string commandPath = "services/serviceCommands/",
-            string cachePath="services/serviceCaches/") :
-            this(connectionString, TimeSpan.FromSeconds(20), routePath, subscriberPath,commandPath, cachePath)
+            string cachePath="services/serviceCaches/",
+            bool reloadOnChange=false, bool enableChildrenMonitor = false) :
+            this(connectionString, TimeSpan.FromSeconds(20), routePath, subscriberPath,commandPath, cachePath, reloadOnChange, enableChildrenMonitor)
         {
         }
 
@@ -35,20 +36,26 @@ namespace Surging.Core.Consul.Configurations
             string routePath = "services/serviceRoutes/",
              string subscriberPath = "services/serviceSubscribers/",
             string commandPath = "services/serviceCommands/",
-            string cachePath= "services/serviceCaches/")
+            string cachePath= "services/serviceCaches/",
+            bool reloadOnChange=false, bool enableChildrenMonitor = false)
         {
             CachePath = cachePath;
+            ReloadOnChange = reloadOnChange;
             SessionTimeout = sessionTimeout;
             RoutePath = routePath;
             SubscriberPath = subscriberPath;
             CommandPath = commandPath;
-            var  address= connectionString.Split(":");
-            if(address.Length>1)
+            EnableChildrenMonitor = enableChildrenMonitor;
+            if (!string.IsNullOrEmpty(connectionString))
             {
-                int port;
-                int.TryParse(address[1], out port);
-                Host = address[0];
-                Port = port;
+                var address = connectionString.Split(":");
+                if (address.Length > 1)
+                {
+                    int port;
+                    int.TryParse(address[1], out port);
+                    Host = address[0];
+                    Port = port;
+                }
             }
         }
 
@@ -63,11 +70,15 @@ namespace Surging.Core.Consul.Configurations
             Port = port;
         }
 
+        public bool ReloadOnChange { get; set; }
+
         /// <summary>
         /// watch 时间间隔
         /// </summary>
         public int WatchInterval { get; set; } = 60;
 
+
+        public bool EnableChildrenMonitor { get; set; }
         /// <summary>
         /// 命令配置路径
         /// </summary>
